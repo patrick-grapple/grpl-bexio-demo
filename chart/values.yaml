@@ -6,6 +6,8 @@
 env: {}
 # configuration for grapple ApplicationSet (gras)
 gras-deploy:
+  enabled: false
+gras:
   enabled: true
   gras: {}
   grapi:
@@ -22,7 +24,12 @@ gras-deploy:
           command:
             - bash
             - -c
-            - sleep 5; while ! mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "show databases;" 2>/dev/null; do echo -n .; sleep 2; done; if mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "USE classicmodelsid; SET @tablename := (select table_name from information_schema.tables where table_type = 'BASE TABLE' and table_schema = 'classicmodelsid' limit 1); set @qry1:= concat('select * from ',@tablename,' limit 1'); prepare stmt from @qry1 ; execute stmt ;" ; then echo "database already exists..."; else curl -o /tmp/classicmodelsid.sql https://raw.githubusercontent.com/grapple-solutions/grapple-test-data/main/classicmodelsid/classicmodelsid.sql; mysql -h $(host) -P $(port) -u $(username) -p$(password) < /tmp/classicmodelsid.sql; fi
+            - sleep 5; 
+              while ! mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "show databases;" 2>/dev/null; do 
+                echo -n .; 
+                sleep 2; 
+              done; 
+              mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "CREATE DATABASE IF NOT EXISTS bexiodemo;"
     extraSecrets:
       - grpl-test-cm-conn-credential
     # volumes:
@@ -42,23 +49,16 @@ gras-deploy:
     #         file: "/data/db.json"
     #         localStorage: "db"
     datasources:
-      - name: classicmodelsid
+      - name: bexiodemo
         spec:
           mysql:
-            database: classicmodelsid
+            database: bexiodemo
             host: $(host)
-            name: classicmodelsid
+            name: bexiodemo
             password: $(password)
             port: $(port)
             url: ""
             user: $(username)
-    discoveries:
-      - name: classicmodelsid
-        spec:
-          all: true
-          dataSource: classicmodelsid
-          disableCamelCase: false
-          schema: classicmodelsid
     models:
       - name: "clients"
         spec:
@@ -93,9 +93,9 @@ gras-deploy:
             creditLimit:
               type: number
     repositories:
-      - name: classicmodelsid
+      - name: clients
         spec:
-          datasource: classicmodelsid
+          datasource: bexiodemo
           model: clients
     # relations:
     #   - name: "employees"
@@ -106,19 +106,10 @@ gras-deploy:
     #       foreignKeyName: "employeesId"
     #       relationType: "belongsTo"
     #       registerInclusionResolver: true
-    relations:
-      - name: employees
-        spec:
-          destinationModel: Employees
-          foreignKeyName: employeesId
-          registerInclusionResolver: true
-          relationName: employees
-          relationType: belongsTo
-          sourceModel: Customers
     restcruds:
-      - name: "classicmodelsid"
+      - name: "bexiodemo"
         spec:
-          datasource: "classicmodelsid"
+          datasource: "bexiodemo"
     controllers: []
     postpatches: []
   gruim:
