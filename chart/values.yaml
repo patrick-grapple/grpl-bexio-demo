@@ -24,14 +24,9 @@ gras:
           command:
             - bash
             - -c
-            - sleep 5; 
-              while ! mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "show databases;" 2>/dev/null; do 
-                echo -n .; 
-                sleep 2; 
-              done; 
-              mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "CREATE DATABASE IF NOT EXISTS bexiodemo;"
+            - sleep 5; while ! mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "show databases;" 2>/dev/null; do echo -n .; sleep 2; done; mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "CREATE DATABASE IF NOT EXISTS bexiodemo;"
     extraSecrets:
-      - grpl-test-cm-conn-credential
+      - grpl-bexiodemo-conn-credential
     # volumes:
     #   - name: data
     #     emptyDir: {}
@@ -111,7 +106,9 @@ gras:
         spec:
           datasource: "bexiodemo"
     controllers: []
-    postpatches: []
+    postpatches:
+      - name: migrate-db
+        content: bnBtIHJ1biBtaWdyYXRl
   gruim:
     # uiimagetag: "0.1.38"
     ssl: true
