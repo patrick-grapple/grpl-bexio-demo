@@ -27,6 +27,7 @@ gras:
             - sleep 5; while ! mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "show databases;" 2>/dev/null; do echo -n .; sleep 2; done; mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "CREATE DATABASE IF NOT EXISTS bexiodemo;"
     extraSecrets:
       - grpl-bexiodemo-conn-credential
+      - bexio-config
     # volumes:
     #   - name: data
     #     emptyDir: {}
@@ -54,6 +55,8 @@ gras:
             port: $(port)
             url: ""
             user: $(username)
+      - name: external
+        content: '{"name":"external","connector":"rest","baseURL":"/sample","options":{"headers":{"accept":"application/json","content-type":"application/json", "Authorization": "Bearer ${BEXIO_TOKEN}"}}, "operations":[]}'
     models:
       - name: "clients"
         spec:
@@ -109,6 +112,9 @@ gras:
     postpatches:
       - name: migrate-db
         content: bnBtIHJ1biBtaWdyYXRl
+    prepatches:
+      - name: create-bexio-data-config
+        content: bWtkaXIgLXAgLi9jb25maWcgfHwgdHJ1ZQplY2hvICdbCiAgICB7CiAgICAgICAgImRzIjogImV4dGVybmFsIiwKICAgICAgICAibWV0aG9kIjogInBvc3QiLAogICAgICAgICJjb250cm9sbGVyIjogIkludm9pY2UiLAogICAgICAgICJhcGlVcmkiOiAiL2tiX2ludm9pY2UiLAogICAgICAgICJ1cmwiOiAiaHR0cHM6Ly9hcGkuYmV4aW8uY29tLzIuMC9rYl9pbnZvaWNlIiwKICAgICAgICAiYm9keVBhcmFtcyI6IFsKICAgICAgICAgICAgewogICAgICAgICAgICAgICAgImludm9pY2VUaXRsZURhdGUiOiAic3RyaW5nIgogICAgICAgICAgICB9LAogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAiZ3JvdXAiOiAic3RyaW5nIgogICAgICAgICAgICB9LAogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAibWluRGF0ZSI6ICJzdHJpbmciCiAgICAgICAgICAgIH0sCiAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICJtYXhEYXRlIjogInN0cmluZyIKICAgICAgICAgICAgfQogICAgICAgIF0sCiAgICAgICAgImFwaUZ1bmN0aW9uIjogImNyZWF0ZUJleGlvSW52b2ljZSIsCiAgICAgICAgIm5hbWUiOiAiSW52b2ljZSIKICAgIH0sCiAgICB7CiAgICAgICAgImRzIjogImV4dGVybmFsIiwKICAgICAgICAiY29udHJvbGxlciI6ICJDb250YWN0IiwKICAgICAgICAiYXBpVXJpIjogIi9jb250YWN0IiwKICAgICAgICAidXJsIjogImh0dHBzOi8vYXBpLmJleGlvLmNvbS8yLjAvY29udGFjdCIsCiAgICAgICAgImFwaUZ1bmN0aW9uIjogImZldGNoQ29udGFjdCIsCiAgICAgICAgIm5hbWUiOiAiQ29udGFjdCIKICAgIH0KXScgPiAuL2NvbmZpZy9iZXhpby1vcHRpb25zLmpzb24=
   gruim:
     # uiimagetag: "0.1.38"
     ssl: true
