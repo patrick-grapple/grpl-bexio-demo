@@ -5,7 +5,8 @@
 
 > [!TIP]
 > create the secret "bexio-config" first
-> k create secret generic bexio-config --from-literal=ExternalOperations=./config bexio-options.json --from-literal=BEXIO_TOKEN=${YOUR_BEXIO_TOKEN}
+> 
+> k create secret generic bexio-config --from-literal=ExternalOperations=./config/bexio-options.json --from-literal=BEXIO_TOKEN=${YOUR_BEXIO_TOKEN}
 
 ### dev mode in kubernetes (mac)
     grpl dev ns ${YOUR_NAMESPACE}
