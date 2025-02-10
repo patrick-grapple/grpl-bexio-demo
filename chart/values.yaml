@@ -45,56 +45,56 @@ gras:
     #         file: "/data/db.json"
     #         localStorage: "db"
     datasources:
-      - name: bexiodemo
-        spec:
-          mysql:
-            database: bexiodemo
-            host: $(host)
-            name: bexiodemo
-            password: $(password)
-            port: $(port)
-            url: ""
-            user: $(username)
+      # - name: bexiodemo
+      #   spec:
+      #     mysql:
+      #       database: bexiodemo
+      #       host: $(host)
+      #       name: bexiodemo
+      #       password: $(password)
+      #       port: $(port)
+      #       url: ""
+      #       user: $(username)
       - name: external
-        content: '{"name":"external","connector":"rest","baseURL":"/sample","options":{"headers":{"accept":"application/json","content-type":"application/json", "Authorization": "Bearer ${BEXIO_TOKEN}"}}, "operations":[]}'
-    models:
-      - name: "clients"
-        spec:
-          name: clients
-          base: Entity
-          properties:
-            id:
-              type: number
-              id: true
-              required: true
-              generated: true
-            customerName:
-              type: string
-            customerLastname:
-              type: string
-            contactFirstName:
-              type: string
-            phone:
-              type: string
-            addressLine1:
-              type: string
-            addressLine2:
-              type: string
-            city:
-              type: string
-            state:
-              type: string
-            postalCode:
-              type: string
-            country:
-              type: string
-            creditLimit:
-              type: number
-    repositories:
-      - name: clients
-        spec:
-          datasource: bexiodemo
-          model: clients
+        content: '{"name":"external","connector":"rest","disableMigration":true,"baseURL":"/sample","options":{"headers":{"accept":"application/json","content-type":"application/json", "Authorization": "Bearer ${BEXIO_TOKEN}"}}, "operations":[]}'
+    # models:
+    #   - name: "personaldata"
+    #     spec:
+    #       name: personaldata
+    #       base: Entity
+    #       properties:
+    #         id:
+    #           type: number
+    #           id: true
+    #           required: true
+    #           generated: true
+    #         customerName:
+    #           type: string
+    #         customerLastname:
+    #           type: string
+    #         contactFirstName:
+    #           type: string
+    #         phone:
+    #           type: string
+    #         addressLine1:
+    #           type: string
+    #         addressLine2:
+    #           type: string
+    #         city:
+    #           type: string
+    #         state:
+    #           type: string
+    #         postalCode:
+    #           type: string
+    #         country:
+    #           type: string
+    #         creditLimit:
+    #           type: number
+    # repositories:
+    #   - name: personaldata
+    #     spec:
+    #       datasource: bexiodemo
+    #       model: personaldata
     # relations:
     #   - name: "employees"
     #     spec:
@@ -104,17 +104,13 @@ gras:
     #       foreignKeyName: "employeesId"
     #       relationType: "belongsTo"
     #       registerInclusionResolver: true
-    restcruds:
-      - name: "bexiodemo"
-        spec:
-          datasource: "bexiodemo"
+    # restcruds:
+    #   - name: "bexiodemo"
+    #     spec:
+    #       datasource: "bexiodemo"
     controllers: []
-    postpatches:
-      - name: migrate-db
-        content: bnBtIHJ1biBtaWdyYXRl
-    prepatches:
-      - name: create-bexio-data-config
-        content: bWtkaXIgLXAgLi9jb25maWcgfHwgdHJ1ZQplY2hvICdbCiAgICB7CiAgICAgICAgImRzIjogImV4dGVybmFsIiwKICAgICAgICAibWV0aG9kIjogInBvc3QiLAogICAgICAgICJjb250cm9sbGVyIjogIkludm9pY2UiLAogICAgICAgICJhcGlVcmkiOiAiL2tiX2ludm9pY2UiLAogICAgICAgICJ1cmwiOiAiaHR0cHM6Ly9hcGkuYmV4aW8uY29tLzIuMC9rYl9pbnZvaWNlIiwKICAgICAgICAiYm9keVBhcmFtcyI6IFsKICAgICAgICAgICAgewogICAgICAgICAgICAgICAgImludm9pY2VUaXRsZURhdGUiOiAic3RyaW5nIgogICAgICAgICAgICB9LAogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAiZ3JvdXAiOiAic3RyaW5nIgogICAgICAgICAgICB9LAogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAibWluRGF0ZSI6ICJzdHJpbmciCiAgICAgICAgICAgIH0sCiAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICJtYXhEYXRlIjogInN0cmluZyIKICAgICAgICAgICAgfQogICAgICAgIF0sCiAgICAgICAgImFwaUZ1bmN0aW9uIjogImNyZWF0ZUJleGlvSW52b2ljZSIsCiAgICAgICAgIm5hbWUiOiAiSW52b2ljZSIKICAgIH0sCiAgICB7CiAgICAgICAgImRzIjogImV4dGVybmFsIiwKICAgICAgICAiY29udHJvbGxlciI6ICJDb250YWN0IiwKICAgICAgICAiYXBpVXJpIjogIi9jb250YWN0IiwKICAgICAgICAidXJsIjogImh0dHBzOi8vYXBpLmJleGlvLmNvbS8yLjAvY29udGFjdCIsCiAgICAgICAgImFwaUZ1bmN0aW9uIjogImZldGNoQ29udGFjdCIsCiAgICAgICAgIm5hbWUiOiAiQ29udGFjdCIKICAgIH0KXScgPiAuL2NvbmZpZy9iZXhpby1vcHRpb25zLmpzb24=
+    postpatches: []
+    prepatches: []
   gruim:
     # uiimagetag: "0.1.38"
     ssl: true
