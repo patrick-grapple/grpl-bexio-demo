@@ -7,6 +7,6 @@ or by injections.
 
 injections are usually being injected in form of:
 - controllers:
-    - just add a controller in "./grapi/controllers/*.controller.ts"
+    - just add a controller in "./grases/gras/grapi/injections/*.controller.ts"
     - it will get picked up by the running grapi and will immediately be processed
 

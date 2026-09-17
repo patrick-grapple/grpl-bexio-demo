@@ -25,7 +25,7 @@ services:
 
 
   grapi:
-    image: grpl/grapi:v0.2.1
+    image: grpl/loopback:0.3.8
     container_name: grapi
     ports:
       - "3333:3000"
