@@ -139,5 +139,12 @@ target/
 
 
 # Ignore grapple specific stuff
-gruim/custommodules/list.json
-grapi/controllers/index.ts
+grases/*/gruim/custommodules/list.json
+grases/*/grapi/controllers/index.ts
+
+# Local credentials
+.env.*
+!.env.example
+
+# Generated external-operation definitions
+/config/
