@@ -1,0 +1,4 @@
+FROM alpine:3.21
+WORKDIR /
+RUN mkdir -p /modules/gras
+COPY grases/gras/grapi/modules/ /modules/gras/

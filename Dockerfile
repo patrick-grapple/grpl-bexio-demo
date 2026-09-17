@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install -g pnpm && pnpm i
+RUN npm install -g pnpm@9 && pnpm i
 
 # Copy source code
 COPY . .
@@ -27,8 +27,8 @@ WORKDIR /app
 
 # Copy built files from the build stage to the production image
 # COPY --from=build /app/dist /usr/share/nginx/html
-COPY *.js .
-COPY *.json .
+COPY *.js ./
+COPY *.json ./
 COPY src /app/src
 
 RUN pnpm i
