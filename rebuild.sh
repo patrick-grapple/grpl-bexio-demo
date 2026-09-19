@@ -2,10 +2,6 @@ if [[ -z "${SVELTE_APP_REMOTE_URL}" ]] && [[ "${REMOTE_ENTRY_URL}" != "" ]]; the
     export SVELTE_APP_REMOTE_URL=$(echo ${REMOTE_ENTRY_URL} | sed "s,/remoteEntry.js,,g")
 fi
 export SVELTE_APP_REMOTE_URL=$(echo ${SVELTE_APP_REMOTE_URL} | sed "s,/remoteEntry.js,,g")
-if [[ -z "${CONTAINER_NAME}" ]]; then
-    export CONTAINER_NAME=$(curl -s -k $SVELTE_APP_REMOTE_URL/dashboard.json | jq -r '.name')
-    echo "CONTAINER_NAME: ${CONTAINER_NAME}"
-fi
 
 echo "SVELTE_APP_REMOTE_URL = ${SVELTE_APP_REMOTE_URL}"
 
@@ -22,6 +18,17 @@ while ! curl -k ${SVELTE_APP_REMOTE_URL}/dashboard.json 2>/dev/null | jq . >/dev
     sleep 1
     echo -n '.'
 done || echo "\n\nERROR: ${SVELTE_APP_REMOTE_URL} did not return a json object..."
+
+if [[ -z "${CONTAINER_NAME}" ]]; then
+    while [[ -z "${CONTAINER_NAME}" ]]; do
+        export CONTAINER_NAME=$(curl -s -k ${SVELTE_APP_REMOTE_URL}/dashboard.json | jq -r '.name // empty')
+        if [[ -z "${CONTAINER_NAME}" ]]; then
+            sleep 1
+            echo -n '.'
+        fi
+    done
+    echo "CONTAINER_NAME: ${CONTAINER_NAME}"
+fi
     
 if [[ -z "${DEV}" ]]; then
     pnpm build
