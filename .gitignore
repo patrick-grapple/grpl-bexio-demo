@@ -148,3 +148,6 @@ grases/*/grapi/controllers/index.ts
 
 # Generated external-operation definitions
 /config/
+
+# Local Helm credentials
+/chart/values-secret.yaml
