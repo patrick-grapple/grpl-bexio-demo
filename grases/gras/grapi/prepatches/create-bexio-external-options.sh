@@ -27,6 +27,9 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       },
       "address": {
         "type": "string"
+      },
+      "is_lead": {
+        "type": "boolean"
       }
     },
     "apiFunction": "createBexioContact",
@@ -58,7 +61,8 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "string"
       },
       "contact_type_id": {
-        "type": "number"
+        "type": "number",
+        "required": true
       },
       "name_1": {
         "type": "string",
@@ -75,6 +79,9 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       },
       "titel_id": {
         "type": "number"
+      },
+      "birthday": {
+        "type": "string"
       },
       "postcode": {
         "type": "string"
@@ -145,13 +152,8 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
     "controller": "Contact",
     "apiUri": "/contacts",
     "url": "https://api.bexio.com/2.0/contact",
-    "apiFunction": "fetchBexioContact",
+    "apiFunction": "fetchBexioContacts",
     "count": true,
-    "queryParams": {
-      "where": {
-        "type": "object"
-      }
-    },
     "modelName": "Contact",
     "responses": {
       "200": {
@@ -168,12 +170,13 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
     "controller": "Contact",
     "apiUri": "/contacts/{id}",
     "url": "https://api.bexio.com/2.0/contact/{id}",
-    "apiFunction": "fetchSingleBexioContact",
+    "apiFunction": "fetchBexioContact",
     "description": "fetch single contacts.",
     "modelName": "Contact",
     "pathParams": {
       "id": {
-        "type": "number"
+        "type": "number",
+        "required": true
       }
     },
     "queryParams": {
@@ -199,11 +202,12 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
     "url": "https://api.bexio.com/2.0/contact/{id}",
     "pathParams": {
       "id": {
-        "type": "number"
+        "type": "number",
+        "required": true
       }
     },
     "modelName": "Contact",
-    "apiFunction": "editBexioContact",
+    "apiFunction": "updateBexioContact",
     "responses": {
       "422": {
         "description": "Validation error",
@@ -236,7 +240,8 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "string"
       },
       "contact_type_id": {
-        "type": "number"
+        "type": "number",
+        "required": true
       },
       "name_1": {
         "type": "string",
@@ -253,6 +258,9 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       },
       "titel_id": {
         "type": "number"
+      },
+      "birthday": {
+        "type": "string"
       },
       "postcode": {
         "type": "string"
@@ -326,7 +334,8 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
     "url": "https://api.bexio.com/2.0/contact/{id}",
     "pathParams": {
       "id": {
-        "type": "number"
+        "type": "number",
+        "required": true
       }
     },
     "apiFunction": "deleteBexioContact",
@@ -344,6 +353,190 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       }
     },
     "description": "DEL Bexio contacts"
+  },
+  {
+    "ds": "external",
+    "method": "post",
+    "controller": "Invoice",
+    "apiUri": "/invoices",
+    "url": "https://api.bexio.com/2.0/kb_invoice",
+    "createModel": true,
+    "modelName": "Invoice",
+    "apiFunction": "createBexioInvoice",
+    "description": "Create a Bexio invoice",
+    "properties": {
+      "document_nr": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "contact_id": {
+        "type": "number"
+      },
+      "contact_sub_id": {
+        "type": "number"
+      },
+      "user_id": {
+        "type": "number"
+      },
+      "pr_project_id": {
+        "type": "number"
+      },
+      "logopaper_id": {
+        "type": "number"
+      },
+      "language_id": {
+        "type": "number"
+      },
+      "bank_account_id": {
+        "type": "number"
+      },
+      "currency_id": {
+        "type": "number"
+      },
+      "payment_type_id": {
+        "type": "number"
+      },
+      "header": {
+        "type": "string"
+      },
+      "footer": {
+        "type": "string"
+      },
+      "mwst_type": {
+        "type": "number"
+      },
+      "mwst_is_net": {
+        "type": "boolean"
+      },
+      "show_position_taxes": {
+        "type": "boolean"
+      },
+      "is_valid_from": {
+        "type": "string"
+      },
+      "is_valid_to": {
+        "type": "string"
+      },
+      "contact_address_manual": {
+        "type": "string"
+      },
+      "delivery_address_type": {
+        "type": "number"
+      },
+      "delivery_address_manual": {
+        "type": "string"
+      },
+      "reference": {
+        "type": "string"
+      },
+      "api_reference": {
+        "type": "string"
+      },
+      "template_slug": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": {
+      "id": {
+        "type": "number",
+        "id": true
+      },
+      "project_id": {
+        "type": "number"
+      },
+      "total_gross": {
+        "type": "string"
+      },
+      "total_net": {
+        "type": "string"
+      },
+      "total_taxes": {
+        "type": "string"
+      },
+      "total": {
+        "type": "string"
+      },
+      "total_remaining_payments": {
+        "type": "string"
+      },
+      "contact_address": {
+        "type": "string"
+      },
+      "kb_item_status_id": {
+        "type": "number"
+      },
+      "updated_at": {
+        "type": "string"
+      },
+      "network_link": {
+        "type": "string"
+      }
+    },
+    "responses": {
+      "201": {
+        "schema": {
+          "type": "object",
+          "model": "Invoice"
+        }
+      },
+      "422": {
+        "description": "Validation error",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "error_code": {
+              "type": "number"
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "ds": "external",
+    "controller": "Invoice",
+    "apiUri": "/invoices",
+    "url": "https://api.bexio.com/2.0/kb_invoice",
+    "apiFunction": "fetchBexioInvoices",
+    "modelName": "Invoice",
+    "count": true,
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "array",
+          "model": "Invoice"
+        }
+      }
+    },
+    "description": "Fetch Bexio invoices"
+  },
+  {
+    "ds": "external",
+    "controller": "Invoice",
+    "apiUri": "/invoices/{id}",
+    "url": "https://api.bexio.com/2.0/kb_invoice/{id}",
+    "apiFunction": "fetchBexioInvoice",
+    "modelName": "Invoice",
+    "pathParams": {
+      "id": {
+        "type": "number",
+        "required": true
+      }
+    },
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "object",
+          "model": "Invoice"
+        }
+      }
+    },
+    "description": "Fetch a single Bexio invoice"
   }
 ]
 BEXIO_OPTIONS_JSON

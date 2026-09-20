@@ -113,7 +113,7 @@ deployments:
         - ./chart/values.yaml
         - ./chart/values-dev.yaml
         - ./chart/values-devspace.yaml
-        # - ./chart/values-secret.yaml # local bexio token, this file is ignored by git
+        - ./chart/values-secret.yaml # local bexio token, this file is ignored by git
       values:
         image:
           repository: ${runtime.images.app.image}
@@ -186,8 +186,14 @@ dev:
       # important for k3d deployments
       - name: NODE_OPTIONS
         value: "--dns-result-order=ipv4first"
+      - name: DEV_BE_FOLDER
+        value: /tmp/devspace-gruim-be
     # Sync files between the local filesystem and the development container
     sync:
+      - path: ./grases/gras/gruim/prepatches/.:/tmp/devspace-gruim-be/prepatches/.
+        disableDownload: true
+        initialSync: mirrorLocal
+        startContainer: true
       - path: ./grases/gras/gruim/custommodules/.:/tmp/devspace-custom-components/.
         disableDownload: true
         initialSync: mirrorLocal
