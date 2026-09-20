@@ -1,9 +1,9 @@
-{{- if not (lookup "v1" "Secret" .Release.Namespace "bexio-config") }}
+{{- if .Values.secrets.bexioToken }}
 apiVersion: v1
 kind: Secret
 metadata:
   name: bexio-config
 type: Opaque
 stringData:
-  BEXIO_TOKEN: ""
+  BEXIO_TOKEN: {{ .Values.secrets.bexioToken | quote }}
 {{- end }}

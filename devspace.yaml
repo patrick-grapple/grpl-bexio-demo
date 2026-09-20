@@ -113,6 +113,7 @@ deployments:
         - ./chart/values.yaml
         - ./chart/values-dev.yaml
         - ./chart/values-devspace.yaml
+        # - ./chart/values-secret.yaml # local bexio token, this file is ignored by git
       values:
         image:
           repository: ${runtime.images.app.image}
@@ -167,7 +168,20 @@ dev:
       grpl.io/resourceName: ${APP_NAME}-gras-gruim
     # Replace the container image with this dev-optimized image
     devImage: docker.io/grpl/gruim:0.3.62
+    command:
+      - sh
+      - -c
+      - |
+        ./rebuild-assets.sh &&
+        mkdir -p /tmp/devspace-custom-components ./src/lib/custom-components &&
+        cp -R /tmp/devspace-custom-components/. ./src/lib/custom-components/ &&
+        test -f ./src/lib/custom-components/list.json || printf '[]\n' > ./src/lib/custom-components/list.json &&
+        ./rebuild-assets/sync.sh &&
+        pnpm dev
     env:
+      # Use the in-cluster API while generating modules during development.
+      - name: OPENAPI_URL
+        value: "http://gras-grapi:3000/openapi.json"
       - name: DEV
         value: "true"
       # NODE_OPTIONS ipv4first need to be defined for fixing the ipv4 resolution in webpack http-proxy-middleware:
@@ -177,7 +191,12 @@ dev:
         value: "--dns-result-order=ipv4first"
     # Sync files between the local filesystem and the development container
     sync:
-      - path: ./grases/gras2/gruim/custommodules/.:/usr/src/app/src/lib/custom-components/.
+      - path: ./grases/gras/gruim/custommodules/.:/tmp/devspace-custom-components/.
+        disableDownload: true
+        initialSync: mirrorLocal
+        startContainer: true
+        excludePaths:
+          - README.md
     # Forward the following ports to be able access your application via localhost
     ports:
       - port: "8080:8080"

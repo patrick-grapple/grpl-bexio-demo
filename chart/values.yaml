@@ -3,6 +3,8 @@
 # Declare variables to be passed into your templates.
 stage: prd
 env: {}
+secrets:
+  bexioToken: ""
 # configuration for grapple ApplicationSet (gras)
 gras-deploy:
   enabled: false
@@ -33,7 +35,7 @@ grases:
         - name: init-modules
           spec:
             name: init-modules
-            image: grpl/grpl-bexio-demo-modules:devspace
+            image: grpl/grpl-bexio-demo-modules:dev
             imagePullPolicy: Always
             command: ["/bin/sh", "-c", "cp -r /modules/gras/. /opt/custom-modules/ && chown -R 1000:1000 /opt/custom-modules"]
             volumeMounts:
@@ -53,6 +55,7 @@ grases:
       openapis: []
       cacheconfigs: []
       controllers: []
+      restcruds: []
       postpatches: []
       services: []
       serviceproviders: []
