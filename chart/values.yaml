@@ -31,7 +31,25 @@ grases:
       extraSecrets:
         - bexio-config
         - bexio-external
+        - grpl-bexiodemo-mysql-account-root
       initContainers:
+        - name: init-db
+          spec:
+            name: init-db
+            image: mysql:8.0
+            env:
+              - name: host
+                value: "grpl-bexiodemo-mysql"
+              - name: port
+                value: "3306"
+            command:
+              - bash
+              - -c
+              - |
+                until mysql -h "$(host)" -P "$(port)" -u "$(username)" -p"$(password)" -e "CREATE DATABASE IF NOT EXISTS bexiodemo;"; do
+                  echo "waiting for mysql"
+                  sleep 2
+                done
         - name: init-modules
           spec:
             name: init-modules
@@ -47,15 +65,56 @@ grases:
       volumes:
         - name: custom-modules
           emptyDir: {}
+      env:
+        - name: host
+          value: "grpl-bexiodemo-mysql"
+        - name: port
+          value: "3306"
       datasources:
+        - name: bexiodemo
+          spec:
+            mysql:
+              database: bexiodemo
+              host: $(host)
+              name: bexiodemo
+              password: $(password)
+              port: $(port)
+              url: ""
+              user: $(username)
         - name: external
           content: '{"name":"external","connector":"rest","disableMigration":true,"baseURL":"https://api.bexio.com/2.0","options":{"headers":{"accept":"application/json","content-type":"application/json","Authorization":"Bearer ${BEXIO_TOKEN}"}},"operations":[]}'
-      models: []
-      repositories: []
+      models:
+        - name: clients
+          spec:
+            name: clients
+            base: Entity
+            properties:
+              id:
+                type: number
+                id: true
+                generated: true
+              bexioContactId:
+                type: number
+                required: true
+              displayName:
+                type: string
+                required: true
+              notes:
+                type: string
+      repositories:
+        - name: clients
+          spec:
+            datasource: bexiodemo
+            model: clients
       openapis: []
       cacheconfigs: []
       controllers: []
-      restcruds: []
+      restcruds:
+        - name: clients
+          spec:
+            datasource: bexiodemo
+            model: clients
+            readonly: false
       postpatches: []
       services: []
       serviceproviders: []

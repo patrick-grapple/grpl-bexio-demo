@@ -179,9 +179,6 @@ dev:
         ./rebuild-assets/sync.sh &&
         pnpm dev
     env:
-      # Use the in-cluster API while generating modules during development.
-      - name: OPENAPI_URL
-        value: "http://gras-grapi:3000/openapi.json"
       - name: DEV
         value: "true"
       # NODE_OPTIONS ipv4first need to be defined for fixing the ipv4 resolution in webpack http-proxy-middleware:
