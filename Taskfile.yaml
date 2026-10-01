@@ -444,6 +444,8 @@ tasks:
           if [ ! -d "${GRUIM_FOLDER}/${cm}" ]; then
             echo "custommodules folder not found at ${GRUIM_FOLDER}/${cm}, skipping custom modules injection"
           else
+            # Keep generated values in sync when custom modules are removed.
+            yq -i "del(.grases.${GRAS_NAME}.gruim.${cm}[])" "{{.VALUES_YAML_PATH}}"
             # Find .svelte, .jsx, and .ts files in gruim folder
             if [[ "$OSTYPE" == "msys"* ]]; then
               FINDFILES=$(find "${GRUIM_FOLDER}/${cm}" -type f \( -name '*.svelte' -or -name '*.jsx' -or -name '*.ts' \) 2>/dev/null | sort)
@@ -453,8 +455,6 @@ tasks:
             if [ -z "${FINDFILES}" ]; then
               echo "No gruim injection files found in ${GRUIM_FOLDER}/${cm}, skipping patching."
             else
-              # Clear existing custommodules for this gras
-              yq -i "del(.grases.${GRAS_NAME}.gruim.${cm}[])" "{{.VALUES_YAML_PATH}}"
               # Patch values.yaml for each file
               for file_path in ${FINDFILES}; do
                 rel_path=$(echo "${file_path}" | sed "s,${GRUIM_FOLDER}/,,g")
@@ -480,13 +480,12 @@ tasks:
           PATCH_FOLDERS="prepatches postpatches"
 
           for PATCH_FOLDER in ${PATCH_FOLDERS}; do
+            # Keep generated values in sync when patch scripts are removed.
+            if yq -e ".grases.${GRAS_NAME}.gruim.${PATCH_FOLDER}" {{.VALUES_YAML_PATH}} >/dev/null 2>&1; then
+              yq -i "del(.grases.${GRAS_NAME}.gruim.${PATCH_FOLDER}[])" {{.VALUES_YAML_PATH}}
+            fi
             FINDFILES="$(find ${GRUIM_FOLDER}/${PATCH_FOLDER} -name '*.sh' 2>/dev/null | sort || true)"
             if [ -n "$FINDFILES" ]; then
-              # Clear existing patches
-              if yq -e ".grases.${GRAS_NAME}.gruim.${PATCH_FOLDER}" {{.VALUES_YAML_PATH}} >/dev/null 2>&1; then
-                yq -i "del(.grases.${GRAS_NAME}.gruim.${PATCH_FOLDER}[])" {{.VALUES_YAML_PATH}}
-              fi
-
               for file_path in $(echo "${FINDFILES}"); do
                 file_name=$(basename "${file_path}")
                 injection_name="${file_name%.*}"
