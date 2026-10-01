@@ -414,9 +414,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       "mwst_type": {
         "type": "number"
       },
-      "mwst_is_net": {
-        "type": "boolean"
-      },
       "show_position_taxes": {
         "type": "boolean"
       },

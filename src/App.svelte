@@ -77,7 +77,6 @@
     header: "Header text",
     footer: "Footer text",
     mwst_type: "VAT type",
-    mwst_is_net: "Prices exclude VAT",
     show_position_taxes: "Show item taxes",
     is_valid_from: "Valid from",
     is_valid_to: "Valid until",
@@ -94,7 +93,7 @@
         "language_id", "currency_id", "payment_type_id", "bank_account_id",
         "is_valid_from", "is_valid_to", "header", "footer", "reference",
         "api_reference", "pr_project_id", "logopaper_id", "template_slug",
-        "mwst_type", "mwst_is_net", "show_position_taxes",
+        "mwst_type", "show_position_taxes",
         "contact_address_manual",
       ],
       "hidden-fields": [
@@ -107,7 +106,7 @@
         "total_remaining_payments", "contact_address", "kb_item_status_id",
         "updated_at", "network_link",
       ],
-      "boolean-fields": ["mwst_is_net", "show_position_taxes"],
+      "boolean-fields": ["show_position_taxes"],
       "textarea-fields": ["header", "footer", "contact_address_manual"],
     },
   };
