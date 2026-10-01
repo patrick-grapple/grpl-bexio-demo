@@ -1,4 +1,4 @@
-# #!/bin/sh
-# set -eu
+#!/bin/sh
+set -eu
 
-# npm run migrate
+npm run migrate
