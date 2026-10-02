@@ -19,8 +19,14 @@ metadata:
   labels:
     {{- include "myapp.labels" . | nindent 4 }}
   annotations:
+    {{- if .Values.ingress.ssl }}
+    {{- if .Values.lookup.enabled -}}
     {{ $secret := (lookup "v1" "Secret" "grpl-system" "grsf-config" ) }}
     cert-manager.io/cluster-issuer: {{ index $secret.data "sslissuer" | b64dec }}
+    {{- else }}
+    cert-manager.io/cluster-issuer: {{ .Values.lookup.sslissuer }}
+    {{- end }}
+    {{- end }}
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -38,10 +44,16 @@ spec:
       secretName: {{ .secretName }}
     {{- end }}
     {{- end }}
+    {{- if .Values.lookup.enabled -}}
     {{ $secret := (lookup "v1" "Secret" "grpl-system" "grsf-config" ) }}
     - hosts:
         - {{ .Release.Namespace }}-{{ $fullName }}.{{ index $secret.data "GRAPPLE_DNS" | b64dec }}
       secretName: {{ $fullName }}-tls
+    {{- else }}
+    - hosts:
+        - {{ .Release.Namespace }}-{{ $fullName }}.{{ .Values.lookup.domain }}
+      secretName: {{ $fullName }}-tls
+    {{- end }}
   rules:
     {{- if .Values.ingress.tls }}
       {{- range .Values.ingress.hosts }}
@@ -66,8 +78,12 @@ spec:
           {{- end }}
       {{- end }}
     {{- end }}
-    {{- $secret := (lookup "v1" "Secret" "grpl-system" "grsf-config" ) }}
+    {{- if .Values.lookup.enabled -}}
+    {{ $secret := (lookup "v1" "Secret" "grpl-system" "grsf-config" ) }}
     - host: {{ .Release.Namespace }}-{{ $fullName }}.{{ index $secret.data "GRAPPLE_DNS" | b64dec }}
+    {{- else }}
+    - host: {{ .Release.Namespace }}-{{ $fullName }}.{{ .Values.lookup.domain }}
+    {{- end }}
       http:
         paths:
           - path: /

@@ -1,7 +1,5 @@
 **/node_modules/
 node_modules
-playwright-report/
-test-results/
 **/dist
 .git
 npm-debug.log
@@ -14,16 +12,13 @@ npm-debug.log
 Dockerfile
 Dockerfile.test
 chart/**
-README.md
 tags.json
 target
 skaffold.yaml
 docker-compose.yaml
 devspace.yaml
 *.tgz
-yarn.lock
-
 Taskfile.yaml
 bitbucket-pipelines.yml
-**/grapi/**
-**/gruim/**
+# Explicitly allow the modules folders (by NOT excluding them like the main .dockerignore does)
+# We want to include grases/*/grapi/modules
