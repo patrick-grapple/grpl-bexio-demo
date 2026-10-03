@@ -470,6 +470,38 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       },
       "network_link": {
         "type": "string"
+      },
+      "document_nr": {
+        "type": "string"
+      },
+      "total_received_payments": {
+        "type": "string"
+      },
+      "total_credit_vouchers": {
+        "type": "string"
+      },
+      "total_rounding_difference": {
+        "type": "number"
+      },
+      "mwst_is_net": {
+        "type": "boolean"
+      },
+      "viewed_by_client_at": {
+        "type": "string"
+      },
+      "esr_id": {
+        "type": "number"
+      },
+      "qr_invoice_id": {
+        "type": "number"
+      },
+      "taxs": {
+        "type": "array",
+        "itemType": "object"
+      },
+      "positions": {
+        "type": "array",
+        "itemType": "object"
       }
     },
     "responses": {
@@ -539,6 +571,138 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       }
     },
     "description": "Fetch a single Bexio invoice"
+  },
+  {
+    "ds": "external",
+    "method": "post",
+    "controllerMethod": "patch",
+    "partial": true,
+    "controller": "Invoice",
+    "apiUri": "/invoices/{id}",
+    "description": "Update a Bexio invoice.",
+    "url": "https://api.bexio.com/2.0/kb_invoice/{id}",
+    "pathParams": {
+      "id": {
+        "type": "number",
+        "required": true
+      }
+    },
+    "modelName": "Invoice",
+    "apiFunction": "updateBexioInvoice",
+    "controllerFunction": "updateById",
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "object",
+          "model": "Invoice"
+        }
+      },
+      "422": {
+        "description": "Validation error",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "error_code": {
+              "type": "number"
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "properties": {
+      "title": {
+        "type": "string"
+      },
+      "contact_id": {
+        "type": "number"
+      },
+      "contact_sub_id": {
+        "type": "number"
+      },
+      "user_id": {
+        "type": "number"
+      },
+      "pr_project_id": {
+        "type": "number"
+      },
+      "logopaper_id": {
+        "type": "number"
+      },
+      "language_id": {
+        "type": "number"
+      },
+      "bank_account_id": {
+        "type": "number"
+      },
+      "currency_id": {
+        "type": "number"
+      },
+      "payment_type_id": {
+        "type": "number"
+      },
+      "header": {
+        "type": "string"
+      },
+      "footer": {
+        "type": "string"
+      },
+      "mwst_type": {
+        "type": "number"
+      },
+      "show_position_taxes": {
+        "type": "boolean"
+      },
+      "is_valid_from": {
+        "type": "string"
+      },
+      "is_valid_to": {
+        "type": "string"
+      },
+      "contact_address_manual": {
+        "type": "string"
+      },
+      "reference": {
+        "type": "string"
+      },
+      "api_reference": {
+        "type": "string"
+      },
+      "template_slug": {
+        "type": "string"
+      }
+    }
+  },
+  {
+    "ds": "external",
+    "method": "del",
+    "controller": "Invoice",
+    "apiUri": "/invoices/{id}",
+    "url": "https://api.bexio.com/2.0/kb_invoice/{id}",
+    "pathParams": {
+      "id": {
+        "type": "number",
+        "required": true
+      }
+    },
+    "apiFunction": "deleteBexioInvoice",
+    "controllerFunction": "deleteById",
+    "modelName": "Invoice",
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "description": "Delete a Bexio invoice."
   }
 ]
 BEXIO_OPTIONS_JSON
