@@ -265,9 +265,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       "salutation_form": {
         "type": "number"
       },
-      "title_id": {
-        "type": "number"
-      },
       "birthday": {
         "type": "string"
       },

@@ -57,15 +57,18 @@
   let contactSchema = {
     "field-properties": {
       "field-order": [
-        "contact_type_id", "name_1", "name_2", "mail", "phone_mobile",
-        "phone_fixed", "street_name", "house_number", "address_addition",
+        "contact_type_id", "name_1", "name_2", "mail", "phone_fixed",
+        "street_name", "house_number",
         "postcode", "city", "country_id", "language_id", "user_id",
-        "owner_id", "remarks", "nr", "salutation_id", "salutation_form",
+        "owner_id", "remarks",
+      ],
+      "hidden-fields": [
+        "id", "updated_at", "profile_image", "address", "is_lead",
+        "phone_mobile", "address_addition", "salutation_id", "salutation_form",
         "title_id", "birthday", "mail_second", "phone_fixed_second", "fax",
         "url", "skype_name", "contact_group_ids", "contact_branch_ids",
       ],
-      "hidden-fields": ["id", "updated_at", "profile_image", "address", "is_lead"],
-      "auto-generated-fields": ["id", "updated_at", "profile_image", "address", "is_lead"],
+      "auto-generated-fields": ["id", "updated_at", "profile_image", "address", "is_lead", "nr"],
       "textarea-fields": ["remarks"],
     },
   };
@@ -114,22 +117,24 @@
   let invoiceSchema = {
     "field-properties": {
       "field-order": [
-        "contact_id", "contact_sub_id", "title", "user_id",
+        "contact_id", "title", "user_id",
         "language_id", "currency_id", "payment_type_id", "bank_account_id",
-        "is_valid_from", "is_valid_to", "header", "footer", "reference",
-        "api_reference", "pr_project_id", "logopaper_id", "template_slug",
-        "mwst_type", "show_position_taxes",
-        "contact_address_manual",
+        "is_valid_from", "is_valid_to", "header", "footer", "mwst_type",
+        "show_position_taxes",
       ],
       "hidden-fields": [
         "id", "project_id", "total_gross", "total_net", "total_taxes", "total",
         "total_remaining_payments", "contact_address", "kb_item_status_id",
-        "updated_at", "network_link",
+        "updated_at", "network_link", "contact_sub_id", "reference",
+        "api_reference", "pr_project_id", "logopaper_id", "template_slug",
+        "contact_address_manual", "total_received_payments",
+        "total_credit_vouchers", "total_rounding_difference", "viewed_by_client_at",
+        "esr_id", "qr_invoice_id", "taxs", "positions",
       ],
       "auto-generated-fields": [
         "id", "project_id", "total_gross", "total_net", "total_taxes", "total",
         "total_remaining_payments", "contact_address", "kb_item_status_id",
-        "updated_at", "network_link",
+        "updated_at", "network_link", "document_nr",
       ],
       "boolean-fields": ["show_position_taxes"],
       "textarea-fields": ["header", "footer", "contact_address_manual"],
@@ -176,27 +181,15 @@
         [item.firstname, item.lastname].filter(Boolean).join(" ") || item.email,
         item.id,
       )),
-      loadLookup("/lookups/projects", (item) => option(
-        [item.nr, item.name].filter(Boolean).join(" – "),
-        item.id,
-      )),
-      loadLookup("/lookups/document-settings", (item) => item.kb_item_class === "KbInvoice"
-        ? option(`${item.text} (default)`, item.default_logopaper_id)
-        : null),
-      loadLookup("/lookups/document-templates", (item) => option(item.name, item.template_slug)),
-      loadLookup("/lookups/salutations", (item) => option(item.name, item.id)),
-      loadLookup("/lookups/titles", (item) => option(item.name, item.id)),
     ]);
 
     const values = lookups.map((result) => result.status === "fulfilled" ? result.value : []);
-    const [contacts, languages, countries, currencies, paymentTypes, bankAccounts, users, projects, documentSettings, templates, salutations, titles] = values;
+    const [contacts, languages, countries, currencies, paymentTypes, bankAccounts, users] = values;
     const failed = lookups.filter((result) => result.status === "rejected");
     if (failed.length) lookupError = `${failed.length} Bexio lookup list${failed.length === 1 ? "" : "s"} could not be loaded.`;
 
     contactSchema = addDropdowns(contactSchema, [
       { name: "contact_type_id", options: [option("Company", 1), option("Person", 2)] },
-      { name: "salutation_id", options: salutations },
-      { name: "title_id", options: titles },
       { name: "country_id", options: countries },
       { name: "language_id", options: languages },
       { name: "user_id", options: users },
@@ -205,15 +198,11 @@
 
     invoiceSchema = addDropdowns(invoiceSchema, [
       { name: "contact_id", options: contacts },
-      { name: "contact_sub_id", options: contacts },
       { name: "user_id", options: users },
       { name: "language_id", options: languages },
       { name: "currency_id", options: currencies },
       { name: "payment_type_id", options: paymentTypes },
       { name: "bank_account_id", options: bankAccounts },
-      { name: "pr_project_id", options: projects },
-      { name: "logopaper_id", options: documentSettings },
-      { name: "template_slug", options: templates },
       { name: "mwst_type", options: [
         option("Including VAT", 0),
         option("Excluding VAT", 1),
