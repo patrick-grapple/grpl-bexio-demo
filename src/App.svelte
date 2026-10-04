@@ -168,7 +168,7 @@
         item.id,
       )),
       loadLookup("/lookups/languages", (item) => option(item.name, item.id)),
-      loadLookup("/lookups/countries", (item) => option(`${item.name} (${item.iso3166_alpha2})`, item.id)),
+      loadLookup("/lookups/countries", (item) => option(`${item.name} (${item.iso_3166_alpha2})`, item.id)),
       loadLookup("/lookups/currencies", (item) => option(item.name, item.id)),
       loadLookup("/lookups/payment-types", (item) => option(item.name, item.id)),
       loadLookup("/lookups/bank-accounts", (item) => option(item.name, item.id)),

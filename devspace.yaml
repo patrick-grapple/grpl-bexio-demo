@@ -167,7 +167,7 @@ dev:
       app.kubernetes.io/name: gruim
       grpl.io/resourceName: ${APP_NAME}-gras-gruim
     # Replace the container image with this dev-optimized image
-    devImage: docker.io/bek99/gruim-test:bexio-external-admin-v8
+    devImage: docker.io/bek99/gruim-test:bexio-external-admin-v10
     command:
       - sh
       - -c

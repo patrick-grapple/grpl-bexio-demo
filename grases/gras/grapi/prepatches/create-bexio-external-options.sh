@@ -753,7 +753,7 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       "name": {
         "type": "string"
       },
-      "iso3166_alpha2": {
+      "iso_3166_alpha2": {
         "type": "string"
       }
     },
