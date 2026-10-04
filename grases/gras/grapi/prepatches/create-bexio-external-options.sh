@@ -146,7 +146,8 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       "address_addition": {
         "type": "string"
       }
-    }
+    },
+    "omitEmptyBodyProperties": true
   },
   {
     "ds": "external",
@@ -332,7 +333,8 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       "address_addition": {
         "type": "string"
       }
-    }
+    },
+    "omitEmptyBodyProperties": true
   },
   {
     "ds": "external",
@@ -525,7 +527,8 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
           }
         }
       }
-    }
+    },
+    "omitEmptyBodyProperties": true
   },
   {
     "ds": "external",
@@ -673,7 +676,8 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       "template_slug": {
         "type": "string"
       }
-    }
+    },
+    "omitEmptyBodyProperties": true
   },
   {
     "ds": "external",
@@ -703,6 +707,341 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       }
     },
     "description": "Delete a Bexio invoice."
+  },
+  {
+    "ds": "external",
+    "controller": "LanguageLookup",
+    "apiUri": "/lookups/languages",
+    "url": "https://api.bexio.com/2.0/language",
+    "modelName": "LanguageLookup",
+    "additionalProperties": {
+      "id": {
+        "type": "number",
+        "id": true
+      },
+      "name": {
+        "type": "string"
+      },
+      "iso_639_1": {
+        "type": "string"
+      }
+    },
+    "apiFunction": "fetchBexioLanguages",
+    "controllerFunction": "find",
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "array",
+          "model": "LanguageLookup"
+        }
+      }
+    },
+    "description": "GET Bexio languages",
+    "createModel": true
+  },
+  {
+    "ds": "external",
+    "controller": "CountryLookup",
+    "apiUri": "/lookups/countries",
+    "url": "https://api.bexio.com/2.0/country",
+    "modelName": "CountryLookup",
+    "additionalProperties": {
+      "id": {
+        "type": "number",
+        "id": true
+      },
+      "name": {
+        "type": "string"
+      },
+      "iso3166_alpha2": {
+        "type": "string"
+      }
+    },
+    "apiFunction": "fetchBexioCountries",
+    "controllerFunction": "find",
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "array",
+          "model": "CountryLookup"
+        }
+      }
+    },
+    "description": "GET Bexio countries",
+    "createModel": true
+  },
+  {
+    "ds": "external",
+    "controller": "CurrencyLookup",
+    "apiUri": "/lookups/currencies",
+    "url": "https://api.bexio.com/3.0/currencies",
+    "modelName": "CurrencyLookup",
+    "additionalProperties": {
+      "id": {
+        "type": "number",
+        "id": true
+      },
+      "name": {
+        "type": "string"
+      }
+    },
+    "apiFunction": "fetchBexioCurrencies",
+    "controllerFunction": "find",
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "array",
+          "model": "CurrencyLookup"
+        }
+      }
+    },
+    "description": "GET Bexio currencies",
+    "createModel": true
+  },
+  {
+    "ds": "external",
+    "controller": "PaymentTypeLookup",
+    "apiUri": "/lookups/payment-types",
+    "url": "https://api.bexio.com/2.0/payment_type",
+    "modelName": "PaymentTypeLookup",
+    "additionalProperties": {
+      "id": {
+        "type": "number",
+        "id": true
+      },
+      "name": {
+        "type": "string"
+      }
+    },
+    "apiFunction": "fetchBexioPaymentTypes",
+    "controllerFunction": "find",
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "array",
+          "model": "PaymentTypeLookup"
+        }
+      }
+    },
+    "description": "GET Bexio payment types",
+    "createModel": true
+  },
+  {
+    "ds": "external",
+    "controller": "BankAccountLookup",
+    "apiUri": "/lookups/bank-accounts",
+    "url": "https://api.bexio.com/3.0/banking/accounts",
+    "modelName": "BankAccountLookup",
+    "additionalProperties": {
+      "id": {
+        "type": "number",
+        "id": true
+      },
+      "name": {
+        "type": "string"
+      },
+      "iban": {
+        "type": "string"
+      }
+    },
+    "apiFunction": "fetchBexioBankAccounts",
+    "controllerFunction": "find",
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "array",
+          "model": "BankAccountLookup"
+        }
+      }
+    },
+    "description": "GET Bexio bank accounts",
+    "createModel": true
+  },
+  {
+    "ds": "external",
+    "controller": "UserLookup",
+    "apiUri": "/lookups/users",
+    "url": "https://api.bexio.com/3.0/users",
+    "modelName": "UserLookup",
+    "additionalProperties": {
+      "id": {
+        "type": "number",
+        "id": true
+      },
+      "firstname": {
+        "type": "string"
+      },
+      "lastname": {
+        "type": "string"
+      },
+      "email": {
+        "type": "string"
+      }
+    },
+    "apiFunction": "fetchBexioUsers",
+    "controllerFunction": "find",
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "array",
+          "model": "UserLookup"
+        }
+      }
+    },
+    "description": "GET Bexio users",
+    "createModel": true
+  },
+  {
+    "ds": "external",
+    "controller": "ProjectLookup",
+    "apiUri": "/lookups/projects",
+    "url": "https://api.bexio.com/2.0/pr_project",
+    "modelName": "ProjectLookup",
+    "additionalProperties": {
+      "id": {
+        "type": "number",
+        "id": true
+      },
+      "nr": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      }
+    },
+    "apiFunction": "fetchBexioProjects",
+    "controllerFunction": "find",
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "array",
+          "model": "ProjectLookup"
+        }
+      }
+    },
+    "description": "GET Bexio projects",
+    "createModel": true
+  },
+  {
+    "ds": "external",
+    "controller": "DocumentSettingLookup",
+    "apiUri": "/lookups/document-settings",
+    "url": "https://api.bexio.com/2.0/kb_item_setting",
+    "modelName": "DocumentSettingLookup",
+    "additionalProperties": {
+      "id": {
+        "type": "number",
+        "id": true
+      },
+      "text": {
+        "type": "string"
+      },
+      "kb_item_class": {
+        "type": "string"
+      },
+      "default_logopaper_id": {
+        "type": "number"
+      }
+    },
+    "apiFunction": "fetchBexioDocumentSettings",
+    "controllerFunction": "find",
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "array",
+          "model": "DocumentSettingLookup"
+        }
+      }
+    },
+    "description": "GET Bexio document settings",
+    "createModel": true
+  },
+  {
+    "ds": "external",
+    "controller": "DocumentTemplateLookup",
+    "apiUri": "/lookups/document-templates",
+    "url": "https://api.bexio.com/3.0/document_templates",
+    "modelName": "DocumentTemplateLookup",
+    "additionalProperties": {
+      "template_slug": {
+        "type": "string",
+        "id": true
+      },
+      "name": {
+        "type": "string"
+      },
+      "is_default": {
+        "type": "boolean"
+      }
+    },
+    "apiFunction": "fetchBexioDocumentTemplates",
+    "controllerFunction": "find",
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "array",
+          "model": "DocumentTemplateLookup"
+        }
+      }
+    },
+    "description": "GET Bexio document templates",
+    "createModel": true
+  },
+  {
+    "ds": "external",
+    "controller": "SalutationLookup",
+    "apiUri": "/lookups/salutations",
+    "url": "https://api.bexio.com/2.0/salutation",
+    "modelName": "SalutationLookup",
+    "additionalProperties": {
+      "id": {
+        "type": "number",
+        "id": true
+      },
+      "name": {
+        "type": "string"
+      }
+    },
+    "apiFunction": "fetchBexioSalutations",
+    "controllerFunction": "find",
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "array",
+          "model": "SalutationLookup"
+        }
+      }
+    },
+    "description": "GET Bexio salutations",
+    "createModel": true
+  },
+  {
+    "ds": "external",
+    "controller": "TitleLookup",
+    "apiUri": "/lookups/titles",
+    "url": "https://api.bexio.com/2.0/title",
+    "modelName": "TitleLookup",
+    "additionalProperties": {
+      "id": {
+        "type": "number",
+        "id": true
+      },
+      "name": {
+        "type": "string"
+      }
+    },
+    "apiFunction": "fetchBexioTitles",
+    "controllerFunction": "find",
+    "responses": {
+      "200": {
+        "schema": {
+          "type": "array",
+          "model": "TitleLookup"
+        }
+      }
+    },
+    "description": "GET Bexio titles",
+    "createModel": true
   }
 ]
 BEXIO_OPTIONS_JSON

@@ -14,22 +14,28 @@
   let loadError = "";
   let showInvoiceForm = false;
   let invoiceVersion = 0;
+  let lookupError = "";
+
+  type DropdownOption = { label: string; value: string | number };
+  type DropdownField = { name: string; options: DropdownOption[] };
+
+  const apiBaseUrl = `${process.env.SVELTE_APP_REMOTE_URL}/api`;
 
   const views: View[] = ["overview", "contacts", "invoices"];
   const contactCountTranslations = { Contact: "Customers", ContactContact: "Customers" };
   const invoiceCountTranslations = { Invoice: "Invoices", InvoiceInvoice: "Invoices" };
   const contactTranslations = {
     nr: "Customer number",
-    contact_type_id: "Contact type ID",
+    contact_type_id: "Contact type",
     name_1: "First or company name",
     name_2: "Last or additional name",
-    salutation_id: "Salutation ID",
+    salutation_id: "Salutation",
     salutation_form: "Salutation form",
-    title_id: "Title ID",
+    title_id: "Title",
     birthday: "Birthday",
     postcode: "Postal code",
     city: "City",
-    country_id: "Country ID",
+    country_id: "Country",
     mail: "Email",
     mail_second: "Secondary email",
     phone_fixed: "Phone",
@@ -39,16 +45,16 @@
     url: "Website",
     skype_name: "Skype name",
     remarks: "Remarks",
-    language_id: "Language ID",
+    language_id: "Language",
     contact_group_ids: "Contact group IDs",
     contact_branch_ids: "Contact branch IDs",
-    user_id: "User ID",
-    owner_id: "Owner ID",
+    user_id: "User",
+    owner_id: "Owner",
     street_name: "Street",
     house_number: "House number",
     address_addition: "Address addition",
   };
-  const contactSchema = {
+  let contactSchema = {
     "field-properties": {
       "field-order": [
         "contact_type_id", "name_1", "name_2", "mail", "phone_mobile",
@@ -66,16 +72,16 @@
   const invoiceTranslations = {
     document_nr: "Document number",
     title: "Title",
-    contact_id: "Customer ID",
-    contact_sub_id: "Contact person ID",
-    user_id: "User ID",
-    project_id: "Project ID",
-    pr_project_id: "Project ID",
-    logopaper_id: "Letterhead ID",
-    language_id: "Language ID",
-    bank_account_id: "Bank account ID",
-    currency_id: "Currency ID",
-    payment_type_id: "Payment type ID",
+    contact_id: "Customer",
+    contact_sub_id: "Contact person",
+    user_id: "User",
+    project_id: "Project",
+    pr_project_id: "Project",
+    logopaper_id: "Letterhead",
+    language_id: "Language",
+    bank_account_id: "Bank account",
+    currency_id: "Currency",
+    payment_type_id: "Payment type",
     header: "Header text",
     footer: "Footer text",
     total_gross: "Gross total",
@@ -105,7 +111,7 @@
     positions: "Line items",
     network_link: "Network link",
   };
-  const invoiceSchema = {
+  let invoiceSchema = {
     "field-properties": {
       "field-order": [
         "contact_id", "contact_sub_id", "title", "user_id",
@@ -130,6 +136,92 @@
     },
   };
 
+  const option = (label: unknown, value: unknown): DropdownOption => ({
+    label: String(label || value || ""),
+    value: value as string | number,
+  });
+
+  const loadLookup = async (
+    path: string,
+    toOption: (item: Record<string, any>) => DropdownOption | null,
+  ): Promise<DropdownOption[]> => {
+    const response = await fetch(`${apiBaseUrl}${path}`);
+    if (!response.ok) throw new Error(`${path} returned status ${response.status}`);
+    const items = await response.json();
+    return Array.isArray(items)
+      ? items.map(toOption).filter((item): item is DropdownOption => item !== null && item.value !== undefined && item.value !== null)
+      : [];
+  };
+
+  const addDropdowns = (schema: any, dropdowns: DropdownField[]) => ({
+    ...schema,
+    "field-properties": {
+      ...schema["field-properties"],
+      "dropdown-fields": dropdowns,
+    },
+  });
+
+  const loadDropdowns = async () => {
+    const lookups = await Promise.allSettled([
+      loadLookup("/contacts", (item) => option(
+        [item.name_1, item.name_2].filter(Boolean).join(" ") || item.nr,
+        item.id,
+      )),
+      loadLookup("/lookups/languages", (item) => option(item.name, item.id)),
+      loadLookup("/lookups/countries", (item) => option(`${item.name} (${item.iso3166_alpha2})`, item.id)),
+      loadLookup("/lookups/currencies", (item) => option(item.name, item.id)),
+      loadLookup("/lookups/payment-types", (item) => option(item.name, item.id)),
+      loadLookup("/lookups/bank-accounts", (item) => option(item.name, item.id)),
+      loadLookup("/lookups/users", (item) => option(
+        [item.firstname, item.lastname].filter(Boolean).join(" ") || item.email,
+        item.id,
+      )),
+      loadLookup("/lookups/projects", (item) => option(
+        [item.nr, item.name].filter(Boolean).join(" – "),
+        item.id,
+      )),
+      loadLookup("/lookups/document-settings", (item) => item.kb_item_class === "KbInvoice"
+        ? option(`${item.text} (default)`, item.default_logopaper_id)
+        : null),
+      loadLookup("/lookups/document-templates", (item) => option(item.name, item.template_slug)),
+      loadLookup("/lookups/salutations", (item) => option(item.name, item.id)),
+      loadLookup("/lookups/titles", (item) => option(item.name, item.id)),
+    ]);
+
+    const values = lookups.map((result) => result.status === "fulfilled" ? result.value : []);
+    const [contacts, languages, countries, currencies, paymentTypes, bankAccounts, users, projects, documentSettings, templates, salutations, titles] = values;
+    const failed = lookups.filter((result) => result.status === "rejected");
+    if (failed.length) lookupError = `${failed.length} Bexio lookup list${failed.length === 1 ? "" : "s"} could not be loaded.`;
+
+    contactSchema = addDropdowns(contactSchema, [
+      { name: "contact_type_id", options: [option("Company", 1), option("Person", 2)] },
+      { name: "salutation_id", options: salutations },
+      { name: "title_id", options: titles },
+      { name: "country_id", options: countries },
+      { name: "language_id", options: languages },
+      { name: "user_id", options: users },
+      { name: "owner_id", options: users },
+    ]);
+
+    invoiceSchema = addDropdowns(invoiceSchema, [
+      { name: "contact_id", options: contacts },
+      { name: "contact_sub_id", options: contacts },
+      { name: "user_id", options: users },
+      { name: "language_id", options: languages },
+      { name: "currency_id", options: currencies },
+      { name: "payment_type_id", options: paymentTypes },
+      { name: "bank_account_id", options: bankAccounts },
+      { name: "pr_project_id", options: projects },
+      { name: "logopaper_id", options: documentSettings },
+      { name: "template_slug", options: templates },
+      { name: "mwst_type", options: [
+        option("Including VAT", 0),
+        option("Excluding VAT", 1),
+        option("VAT exempt", 2),
+      ] },
+    ]);
+  };
+
   onMount(async () => {
     try {
       const [contactAdmin, contactCount, invoiceAdmin, invoiceCreate, invoiceCount] = await Promise.all([
@@ -144,6 +236,7 @@
       InvoiceAdmin = invoiceAdmin.default;
       InvoiceCreate = invoiceCreate.default;
       InvoiceCount = invoiceCount.default;
+      await loadDropdowns();
     } catch (error) {
       loadError = error instanceof Error ? error.message : "Generated modules could not be loaded.";
     } finally {
@@ -203,6 +296,7 @@
           <h2 class="text-xl font-semibold">Customers</h2>
           <p class="text-sm text-slate-500">Manage Bexio contacts through the generated Grapple admin module.</p>
         </div>
+        {#if lookupError}<p class="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{lookupError}</p>{/if}
         <svelte:component this={ContactAdmin} schema={contactSchema} translations={contactTranslations} enableFilter={true} enableClearFilter={true} enableLoadMore={true} />
       </section>
     {:else}
@@ -215,6 +309,8 @@
             </div>
             <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white" style="background-color: #0f172a; color: #ffffff;" on:click={() => showInvoiceForm = !showInvoiceForm}>{showInvoiceForm ? "Close form" : "Create invoice"}</button>
           </div>
+
+          {#if lookupError}<p class="mt-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{lookupError}</p>{/if}
 
           {#if showInvoiceForm}
             <div class="mt-5 border-t border-slate-200 pt-5" transition:slide={{ duration: 180 }}>
