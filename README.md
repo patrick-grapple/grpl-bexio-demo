@@ -6,21 +6,46 @@ A Bexio integration demo built with Grapple external operations and generated UI
 
 ```
 grases/gras/grapi/   – backend injections and external operations config
-grases/gras/gruim/   – custom Svelte UI modules and gruim prepatches
-src/                 – frontend consuming the generated Contact and Invoice modules
+grases/gras/gruim/   – extension point for optional custom gruim modules
+src/                 – frontend configuring and consuming the generated Contact and Invoice modules
 chart/               – Helm chart and ApplicationSet values
 ```
 
 ## Bexio token
 
-The token is stored in the `bexio-config` Kubernetes Secret. For local development, create `chart/values-secret.yaml`:
+The backend reads the token from the `BEXIO_TOKEN` environment variable. Never expose it through a `SVELTE_APP_*` variable or commit it to Git.
+
+For a new DevSpace environment, create the git-ignored `chart/values-secret.yaml` file before running `devspace dev`:
 
 ```yaml
 secrets:
   bexioToken: "your-bexio-token"
 ```
 
-This file is git-ignored. The chart creates the Secret from it automatically before DevSpace deploys.
+The Helm chart creates a `bexio-config` Kubernetes Secret containing `BEXIO_TOKEN`.
+
+To add or replace the token later in an existing namespace, apply the Secret directly:
+
+```sh
+kubectl --namespace <namespace> create secret generic bexio-config \
+  --from-literal=BEXIO_TOKEN='your-bexio-token' \
+  --dry-run=client -o yaml | kubectl apply -f -
+```
+
+Restart the Grapi pod so that it receives the updated environment variable:
+
+```sh
+kubectl --namespace <namespace> delete pod \
+  -l app.kubernetes.io/name=grapi,grpl.io/resourceName=bexio-demo-gras-grapi
+```
+
+For Docker Compose, copy the example environment file and set the token there:
+
+```sh
+cp .env.example .env
+# Edit .env:
+BEXIO_TOKEN=your-bexio-token
+```
 
 ## Cluster development (DevSpace)
 
@@ -44,8 +69,6 @@ Requires Node 22 and pnpm 9.15.9.
 
 ```sh
 pnpm install --frozen-lockfile
-cp .env.example .env
-# Set BEXIO_TOKEN in .env
 docker compose up -d
 pnpm dev
 ```
