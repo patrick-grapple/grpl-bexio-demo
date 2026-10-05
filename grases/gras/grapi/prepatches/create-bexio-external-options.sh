@@ -378,13 +378,15 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "string"
       },
       "contact_id": {
-        "type": "number"
+        "type": "number",
+        "required": true
       },
       "contact_sub_id": {
         "type": "number"
       },
       "user_id": {
-        "type": "number"
+        "type": "number",
+        "required": true
       },
       "pr_project_id": {
         "type": "number"

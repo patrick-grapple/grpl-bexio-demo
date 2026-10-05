@@ -134,7 +134,9 @@
       "auto-generated-fields": [
         "id", "project_id", "total_gross", "total_net", "total_taxes", "total",
         "total_remaining_payments", "contact_address", "kb_item_status_id",
-        "updated_at", "network_link", "document_nr",
+        "updated_at", "network_link", "document_nr", "total_received_payments",
+        "total_credit_vouchers", "total_rounding_difference", "esr_id",
+        "qr_invoice_id", "taxs", "positions",
       ],
       "boolean-fields": ["show_position_taxes"],
       "textarea-fields": ["header", "footer", "contact_address_manual"],
