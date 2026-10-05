@@ -16,7 +16,7 @@ grases:
       name: bexio-demo
       runimages:
         image: grpl/loopback
-        tag: "0.4.24"
+        tag: "0.4.28.pr-455"
       discoveredrepos: false
       buildimages:
         enabled: true
@@ -124,7 +124,7 @@ grases:
     gruim:
       name: bexio-demo
       runimages:
-        tag: 0.3.62
+        tag: 0.3.64.pr-196
         image: grpl/gruim
       buildimages:
         enabled: true
