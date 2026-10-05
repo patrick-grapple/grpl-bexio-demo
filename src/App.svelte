@@ -68,7 +68,10 @@
         "title_id", "birthday", "mail_second", "phone_fixed_second", "fax",
         "url", "skype_name", "contact_group_ids", "contact_branch_ids",
       ],
-      "auto-generated-fields": ["id", "updated_at", "profile_image", "address", "is_lead", "nr"],
+      "auto-generated-fields": [
+        "id", "updated_at", "profile_image", "address", "is_lead", "nr",
+        "salutation_id",
+      ],
       "textarea-fields": ["remarks"],
     },
   };
