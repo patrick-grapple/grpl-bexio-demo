@@ -9,23 +9,28 @@ env:
 # - name: DEV
 #   value: "true"
 
-
-# gras-deploy:
-gras:
-  # gras: 
-  #   ssl: false
-  grapi:
-    ssl: false
-    autorestartgruim: false
-  gruim:
-    ssl: false
-
-
+grases:
+  gras:
+    grapi:
+      ssl: false
+      buildimages:
+        enabled: false
+      deployimages:
+        enabled: false
+    gruim:
+      ssl: false
+      buildimages:
+        enabled: false
+      deployimages:
+        enabled: false
 ingress:
   enabled: true
+  ssl: false
   hosts:
     - host: myapp
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls: []
+
+stage: dev

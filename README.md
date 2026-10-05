@@ -1,56 +1,89 @@
-# grapple-template
+# Grapple Bexio demo
 
+A Bexio integration demo built with Grapple external operations and generated UI modules for Contacts and Invoices.
 
-## getting started
+## Project structure
 
-> [!TIP]
-> create the secret "bexio-config" first
-> 
-> k create secret generic bexio-config --from-literal=ExternalOperations=./config/bexio-options.json --from-literal=BEXIO_TOKEN=${YOUR_BEXIO_TOKEN}
+```
+grases/gras/grapi/   – backend injections and external operations config
+grases/gras/gruim/   – extension point for optional custom gruim modules
+src/                 – frontend configuring and consuming the generated Contact and Invoice modules
+chart/               – Helm chart and ApplicationSet values
+```
 
-### dev mode in kubernetes (mac)
-    grpl dev ns ${YOUR_NAMESPACE}
-    grpl dev
+## Bexio token
 
-### dev mode in kubernetes (windows)
-    devspace use namespace ${YOUR_NAMESPACE}
-    devspace dev
+The backend reads the token from the `BEXIO_TOKEN` environment variable. Never expose it through a `SVELTE_APP_*` variable or commit it to Git.
 
+For a new DevSpace environment, create the git-ignored `chart/values-secret.yaml` file before running `devspace dev`:
 
-## folder structure
+```yaml
+secrets:
+  bexioToken: "your-bexio-token"
+```
 
-    .                   -> application base directory
-    ├── src                 -> application src directory
-        ├── index.html          -> 
-        ├── index.ts            -> 
-        ├── App.svelte          -> 
-    ├── grapi               -> grapi (grapple API) injections
-        ├── controllers          -> grapi controllers
-            ├── ping2.controller.ts     -> example controller injection
-    ├── gruim               -> gruim (grapple UI modules) injections
-        ├── shared          -> gruim shared UI modules 
-            ├── *.svelte    -> example gruim UI module injection
-    ├── chart               -> helm chart directory ==> https://helm.sh/docs/topics/charts/
-        ├── values.yaml         -> the default configuration values for this chart
-        ├── values*.yaml        -> values files for different profiles / environments
-        ├── Chart.yaml          -> A YAML file containing information about the chart
-        ├── templates           -> folder for all yaml manifest templates
-        ├── charts              -> folder for sub-charts
-    ├── test                -> application test cases directory
-        ├── *.sh                -> test cases
-    ├── .dockerignore       -> You can use a .dockerignore file to exclude files or directories from the build context.
-    ├── .gitignore          -> Specifies intentionally untracked files to ignore
-    ├── Dockerfile          -> Dockerfile is a text document containing all the commands the user requires to call on the command line to assemble an image.
-    ├── Dockerfile.test     -> Dockerfile for the test cases (optional)
-    ├── package.json        -> Dockerfile for the test cases (optional)
-    ├── README.md           -> this file
-    ├── skaffold.yaml       -> Skaffold contains configuration for all phases of the application delivery process
-    ├── webpack.config.js   -> webpack configuration file ==> https://webpack.js.org/concepts/configuration/
+The Helm chart creates a `bexio-config` Kubernetes Secret containing `BEXIO_TOKEN`.
 
+To add or replace the token later in an existing namespace, apply the Secret directly:
 
-## environment variables
+```sh
+kubectl --namespace <namespace> create secret generic bexio-config \
+  --from-literal=BEXIO_TOKEN='your-bexio-token' \
+  --dry-run=client -o yaml | kubectl apply -f -
+```
 
-APP: define the name of the APP
-NAMESPACE: define a namespace extension to the deplyoment
+Restart the Grapi pod so that it receives the updated environment variable:
 
-SKAFFOLD_CACHE_ARTIFACTS: "false" - to disable cached artifacts
+```sh
+kubectl --namespace <namespace> delete pod \
+  -l app.kubernetes.io/name=grapi,grpl.io/resourceName=bexio-demo-gras-grapi
+```
+
+For Docker Compose, copy the example environment file and set the token there:
+
+```sh
+cp .env.example .env
+# Edit .env:
+BEXIO_TOKEN=your-bexio-token
+```
+
+## Cluster development (DevSpace)
+
+Requirements: Grapple cluster, `grpl` CLI, `devspace`, `helm`, `task`, `yq` v4.
+
+```sh
+kubectl create namespace <namespace>
+grpl dev ns <namespace>
+devspace dev
+```
+
+| Service  | URL                   |
+|----------|-----------------------|
+| Frontend | http://localhost:4000 |
+| Gruim    | http://localhost:8080 |
+| Grapi    | http://localhost:3000 |
+
+## Local development (Docker Compose)
+
+Requires Node 22 and pnpm 9.15.9.
+
+```sh
+pnpm install --frozen-lockfile
+docker compose up -d
+pnpm dev
+```
+
+gruim → `http://localhost:8080`, Grapi → `http://localhost:3333`, frontend → `http://localhost:4000`.
+
+## Useful commands
+
+```sh
+task patch-values-file    # generate base64 injections into the values file
+task reset-values-file    # clear injections
+task package-push         # package and push the chart
+task package-push-deploy  # package, push and deploy
+```
+
+```sh
+grpl gruim rebuild        # rebuild gruim
+```

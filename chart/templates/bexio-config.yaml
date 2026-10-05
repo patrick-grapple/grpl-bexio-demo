@@ -1,0 +1,9 @@
+{{- if .Values.secrets.bexioToken }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bexio-config
+type: Opaque
+stringData:
+  BEXIO_TOKEN: {{ .Values.secrets.bexioToken | quote }}
+{{- end }}
