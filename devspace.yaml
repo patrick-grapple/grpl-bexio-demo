@@ -212,7 +212,7 @@ dev:
       app.kubernetes.io/name: grapi
       grpl.io/resourceName: ${APP_NAME}-gras-grapi
     # Replace the container image with this dev-optimized image
-    devImage: grpl/grapi-test:0.4.28.pr-455
+    devImage: grpl/loopback:0.4.28.pr-455
     env:
       - name: DEV
         value: "true"
