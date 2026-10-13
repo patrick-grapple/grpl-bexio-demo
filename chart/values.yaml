@@ -53,7 +53,7 @@ grases:
         - name: init-modules
           spec:
             name: init-modules
-            image: grpl/grpl-bexio-demo-modules:dev
+            image: grpl/grpl-bexio-demo-modules:a8dd144
             imagePullPolicy: Always
             command: ["/bin/sh", "-c", "cp -r /modules/gras/. /opt/custom-modules/ && chown -R 1000:1000 /opt/custom-modules"]
             volumeMounts:

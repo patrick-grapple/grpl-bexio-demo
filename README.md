@@ -32,7 +32,7 @@ kubectl --namespace <namespace> create secret generic bexio-config \
   --dry-run=client -o yaml | kubectl apply -f -
 ```
 
-Restart the Grapi pod so that it receives the updated environment variable:
+Restart the grapi pod so that it receives the updated environment variable:
 
 ```sh
 kubectl --namespace <namespace> delete pod \
@@ -60,20 +60,8 @@ devspace dev
 | Service  | URL                   |
 |----------|-----------------------|
 | Frontend | http://localhost:4000 |
-| Gruim    | http://localhost:8080 |
-| Grapi    | http://localhost:3000 |
-
-## Local development (Docker Compose)
-
-Requires Node 22 and pnpm 9.15.9.
-
-```sh
-pnpm install --frozen-lockfile
-docker compose up -d
-pnpm dev
-```
-
-gruim → `http://localhost:8080`, Grapi → `http://localhost:3333`, frontend → `http://localhost:4000`.
+| gruim    | http://localhost:8080 |
+| grapi    | http://localhost:3000 |
 
 ## Useful commands
 
