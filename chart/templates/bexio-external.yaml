@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bexio-external
+type: Opaque
+stringData:
+  ExternalOperations: ./config/bexio-options.json

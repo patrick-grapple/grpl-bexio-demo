@@ -1,25 +1,25 @@
 env:
 - name: DEV
   value: "true"
-
-
-# gras-deploy:
-gras:
-  # gras: 
-  #   ssl: false
-  grapi:
-    ssl: false
-    dev: true
-  gruim:
-    ssl: false
-    dev: true
-
-
+grases:
+  gras:
+    grapi:
+      ssl: false
+      dev: true
+      buildimages:
+        enabled: false
+      deployimages:
+        enabled: false
+    gruim:
+      ssl: false
+      dev: true
+      buildimages:
+        enabled: false
+      deployimages:
+        enabled: false
 ingress:
   enabled: true
-  hosts:
-    - host: myapp.test
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+  ssl: false
+  hosts: []
   tls: []
+stage: dev
