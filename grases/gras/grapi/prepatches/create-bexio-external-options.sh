@@ -7,7 +7,7 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
 [
   {
     "ds": "external",
-    "method": "post",
+    "httpMethod": "post",
     "controller": "Contact",
     "apiUri": "/contacts",
     "url": "https://api.bexio.com/2.0/contact",
@@ -32,7 +32,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "boolean"
       }
     },
-    "apiFunction": "createBexioContact",
     "controllerFunction": "create",
     "responses": {
       "422": {
@@ -154,10 +153,8 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
     "controller": "Contact",
     "apiUri": "/contacts",
     "url": "https://api.bexio.com/2.0/contact",
-    "apiFunction": "fetchBexioContacts",
     "controllerFunction": "find",
     "localFilter": true,
-    "count": true,
     "countFunction": "count",
     "modelName": "Contact",
     "responses": {
@@ -175,7 +172,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
     "controller": "Contact",
     "apiUri": "/contacts/{id}",
     "url": "https://api.bexio.com/2.0/contact/{id}",
-    "apiFunction": "fetchBexioContact",
     "controllerFunction": "findById",
     "description": "fetch single contacts.",
     "modelName": "Contact",
@@ -201,7 +197,7 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
   },
   {
     "ds": "external",
-    "method": "post",
+    "httpMethod": "post",
     "controllerMethod": "patch",
     "partial": true,
     "controller": "Contact",
@@ -215,7 +211,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       }
     },
     "modelName": "Contact",
-    "apiFunction": "updateBexioContact",
     "controllerFunction": "updateById",
     "responses": {
       "422": {
@@ -335,7 +330,7 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
   },
   {
     "ds": "external",
-    "method": "del",
+    "httpMethod": "del",
     "controller": "Contact",
     "apiUri": "/contacts/{id}",
     "url": "https://api.bexio.com/2.0/contact/{id}",
@@ -345,7 +340,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "required": true
       }
     },
-    "apiFunction": "deleteBexioContact",
     "controllerFunction": "deleteById",
     "modelName": "Contact",
     "responses": {
@@ -364,13 +358,12 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
   },
   {
     "ds": "external",
-    "method": "post",
+    "httpMethod": "post",
     "controller": "Invoice",
     "apiUri": "/invoices",
     "url": "https://api.bexio.com/2.0/kb_invoice",
     "createModel": true,
     "modelName": "Invoice",
-    "apiFunction": "createBexioInvoice",
     "controllerFunction": "create",
     "description": "Create a Bexio invoice",
     "properties": {
@@ -534,11 +527,9 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
     "controller": "Invoice",
     "apiUri": "/invoices",
     "url": "https://api.bexio.com/2.0/kb_invoice",
-    "apiFunction": "fetchBexioInvoices",
     "controllerFunction": "find",
     "localFilter": true,
     "modelName": "Invoice",
-    "count": true,
     "countFunction": "count",
     "responses": {
       "200": {
@@ -555,7 +546,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
     "controller": "Invoice",
     "apiUri": "/invoices/{id}",
     "url": "https://api.bexio.com/2.0/kb_invoice/{id}",
-    "apiFunction": "fetchBexioInvoice",
     "controllerFunction": "findById",
     "modelName": "Invoice",
     "pathParams": {
@@ -576,7 +566,7 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
   },
   {
     "ds": "external",
-    "method": "post",
+    "httpMethod": "post",
     "controllerMethod": "patch",
     "partial": true,
     "controller": "Invoice",
@@ -590,7 +580,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
       }
     },
     "modelName": "Invoice",
-    "apiFunction": "updateBexioInvoice",
     "controllerFunction": "updateById",
     "responses": {
       "200": {
@@ -680,7 +669,7 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
   },
   {
     "ds": "external",
-    "method": "del",
+    "httpMethod": "del",
     "controller": "Invoice",
     "apiUri": "/invoices/{id}",
     "url": "https://api.bexio.com/2.0/kb_invoice/{id}",
@@ -690,7 +679,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "required": true
       }
     },
-    "apiFunction": "deleteBexioInvoice",
     "controllerFunction": "deleteById",
     "modelName": "Invoice",
     "responses": {
@@ -725,7 +713,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "string"
       }
     },
-    "apiFunction": "fetchBexioLanguages",
     "controllerFunction": "find",
     "responses": {
       "200": {
@@ -756,7 +743,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "string"
       }
     },
-    "apiFunction": "fetchBexioCountries",
     "controllerFunction": "find",
     "responses": {
       "200": {
@@ -784,7 +770,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "string"
       }
     },
-    "apiFunction": "fetchBexioCurrencies",
     "controllerFunction": "find",
     "responses": {
       "200": {
@@ -812,7 +797,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "string"
       }
     },
-    "apiFunction": "fetchBexioPaymentTypes",
     "controllerFunction": "find",
     "responses": {
       "200": {
@@ -843,7 +827,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "string"
       }
     },
-    "apiFunction": "fetchBexioBankAccounts",
     "controllerFunction": "find",
     "responses": {
       "200": {
@@ -877,7 +860,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "string"
       }
     },
-    "apiFunction": "fetchBexioUsers",
     "controllerFunction": "find",
     "responses": {
       "200": {
@@ -908,7 +890,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "string"
       }
     },
-    "apiFunction": "fetchBexioProjects",
     "controllerFunction": "find",
     "responses": {
       "200": {
@@ -942,7 +923,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "number"
       }
     },
-    "apiFunction": "fetchBexioDocumentSettings",
     "controllerFunction": "find",
     "responses": {
       "200": {
@@ -973,7 +953,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "boolean"
       }
     },
-    "apiFunction": "fetchBexioDocumentTemplates",
     "controllerFunction": "find",
     "responses": {
       "200": {
@@ -1001,7 +980,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "string"
       }
     },
-    "apiFunction": "fetchBexioSalutations",
     "controllerFunction": "find",
     "responses": {
       "200": {
@@ -1029,7 +1007,6 @@ cat > ./config/bexio-options.json <<'BEXIO_OPTIONS_JSON'
         "type": "string"
       }
     },
-    "apiFunction": "fetchBexioTitles",
     "controllerFunction": "find",
     "responses": {
       "200": {
