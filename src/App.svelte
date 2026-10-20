@@ -5,11 +5,6 @@
   type View = "overview" | "contacts" | "invoices";
 
   let view: View = "overview";
-  let ContactAdmin: any;
-  let ContactCount: any;
-  let InvoiceAdmin: any;
-  let InvoiceCreate: any;
-  let InvoiceCount: any;
   let loading = true;
   let loadError = "";
   let showInvoiceForm = false;
@@ -216,23 +211,84 @@
     ]);
   };
 
+  const mountModule = (
+    target: HTMLElement,
+    load: () => Promise<{ default: any }>,
+    props: Record<string, unknown> = {},
+  ) => {
+    let instance: any;
+    let destroyed = false;
+
+    load()
+      .then(({ default: Module }) => {
+        if (!destroyed) instance = new Module({ target, props });
+      })
+      .catch((error) => {
+        loadError = error instanceof Error ? error.message : "Generated module could not be loaded.";
+      });
+
+    return {
+      destroy: () => {
+        destroyed = true;
+        instance?.$destroy?.();
+      },
+    };
+  };
+
+  const mountContactCount = (target: HTMLElement) => mountModule(
+    target,
+    () => import("App/Contact/count"),
+    { translation: contactCountTranslations },
+  );
+
+  const mountInvoiceCount = (target: HTMLElement) => mountModule(
+    target,
+    () => import("App/Invoice/count"),
+    { translation: invoiceCountTranslations },
+  );
+
+  const mountContact = (target: HTMLElement) => mountModule(
+    target,
+    () => import("App/Contact"),
+    {
+      schema: contactSchema,
+      translation: contactTranslations,
+      enableFilter: true,
+      enableClearFilter: true,
+      enableLoadMore: true,
+    },
+  );
+
+  const mountInvoiceCreate = (target: HTMLElement) => mountModule(
+    target,
+    () => import("App/Invoice/create"),
+    {
+      schema: invoiceSchema,
+      translation: invoiceTranslations,
+      onSuccess: () => {
+        showInvoiceForm = false;
+        invoiceVersion += 1;
+      },
+    },
+  );
+
+  const mountInvoice = (target: HTMLElement) => mountModule(
+    target,
+    () => import("App/Invoice"),
+    {
+      schema: invoiceSchema,
+      translation: invoiceTranslations,
+      enableFilter: true,
+      enableClearFilter: true,
+      enableLoadMore: true,
+    },
+  );
+
   onMount(async () => {
     try {
-      const [contactAdmin, contactCount, invoiceAdmin, invoiceCreate, invoiceCount] = await Promise.all([
-        import("App/Contact"),
-        import("App/Contact/count"),
-        import("App/Invoice"),
-        import("App/Invoice/create"),
-        import("App/Invoice/count"),
-      ]);
-      ContactAdmin = contactAdmin.default;
-      ContactCount = contactCount.default;
-      InvoiceAdmin = invoiceAdmin.default;
-      InvoiceCreate = invoiceCreate.default;
-      InvoiceCount = invoiceCount.default;
       await loadDropdowns();
     } catch (error) {
-      loadError = error instanceof Error ? error.message : "Generated modules could not be loaded.";
+      lookupError = error instanceof Error ? error.message : "Bexio lookup lists could not be loaded.";
     } finally {
       loading = false;
     }
@@ -274,13 +330,13 @@
         <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 class="text-lg font-semibold">Customers</h2>
           <p class="mb-4 text-sm text-slate-500">Contacts available in the connected Bexio account.</p>
-          <svelte:component this={ContactCount} translations={contactCountTranslations} />
+          <div use:mountContactCount></div>
           <button class="mt-5 text-sm font-semibold text-rose-700" on:click={() => view = "contacts"}>Manage customers →</button>
         </article>
         <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 class="text-lg font-semibold">Invoices</h2>
           <p class="mb-4 text-sm text-slate-500">Invoices returned by the Bexio API.</p>
-          <svelte:component this={InvoiceCount} translations={invoiceCountTranslations} />
+          <div use:mountInvoiceCount></div>
           <button class="mt-5 text-sm font-semibold text-rose-700" on:click={() => view = "invoices"}>Manage invoices →</button>
         </article>
       </section>
@@ -291,7 +347,7 @@
           <p class="text-sm text-slate-500">Manage Bexio contacts through the generated Grapple admin module.</p>
         </div>
         {#if lookupError}<p class="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{lookupError}</p>{/if}
-        <svelte:component this={ContactAdmin} schema={contactSchema} translations={contactTranslations} enableFilter={true} enableClearFilter={true} enableLoadMore={true} />
+        <div use:mountContact></div>
       </section>
     {:else}
       <section class="space-y-4">
@@ -309,22 +365,14 @@
           {#if showInvoiceForm}
             <div class="mt-5 border-t border-slate-200 pt-5" transition:slide={{ duration: 180 }}>
               <h3 class="mb-3 text-lg font-semibold">Create invoice</h3>
-              <svelte:component
-                this={InvoiceCreate}
-                schema={invoiceSchema}
-                translations={invoiceTranslations}
-                onSuccess={() => {
-                  showInvoiceForm = false;
-                  invoiceVersion += 1;
-                }}
-              />
+              <div use:mountInvoiceCreate></div>
             </div>
           {/if}
         </div>
 
         <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           {#key invoiceVersion}
-            <svelte:component this={InvoiceAdmin} schema={invoiceSchema} translations={invoiceTranslations} enableFilter={true} enableClearFilter={true} enableLoadMore={true} />
+            <div use:mountInvoice></div>
           {/key}
         </section>
       </section>
