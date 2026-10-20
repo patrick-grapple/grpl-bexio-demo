@@ -20,11 +20,11 @@ grases:
         image: grpl/loopback
         tag: "0.4.28.pr-455"
       discoveredrepos: false
-      buildimages:
-        enabled: true
-        tag: 0.0.1
-      deployimages:
-        enabled: true
+      # buildimages:
+      #   enabled: true
+      #   tag: 0.0.1
+      # deployimages:
+      #   enabled: true
       ingress: true
       ssl: true
       sslissuer: letsencrypt-grapple-demo
@@ -128,11 +128,11 @@ grases:
       runimages:
         tag: 0.3.64.pr-196
         image: grpl/gruim
-      buildimages:
-        enabled: true
-        tag: 0.0.1
-      deployimages:
-        enabled: true
+      # buildimages:
+      #   enabled: true
+      #   tag: 0.0.1
+      # deployimages:
+      #   enabled: true
       ssl: true
       sslissuer: letsencrypt-grapple-demo
       autoscaling:
