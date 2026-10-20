@@ -615,10 +615,15 @@ tasks:
         echo "Patching init-modules image to: ${IMAGE_NAME}"
         yq e -i "(.grases[].grapi.initContainers[] | select(.name == \"init-modules\")).spec.image = \"${IMAGE_NAME}\"" {{.VALUES_YAML_PATH}}
 
+        if [ ! -f chart/values-secret.yaml ]; then
+          echo "Missing chart/values-secret.yaml"
+          exit 1
+        fi
+
         # run dependency update in order to prevent issue on the first build
         helm dep up chart
 
-        helm upgrade --install {{.APP_NAME}} {{.CHART_FOLDER}} --namespace "{{.APP_NAME}}-{{.STAGE}}" --create-namespace -f {{.VALUES_YAML_PATH}} -f chart/values-dev.yaml
+        helm upgrade --install {{.APP_NAME}} {{.CHART_FOLDER}} --namespace "{{.APP_NAME}}-{{.STAGE}}" --create-namespace -f {{.VALUES_YAML_PATH}} -f chart/values-dev.yaml -f chart/values-secret.yaml
       - task: reset-values-file
 
   build-and-deploy-local:
