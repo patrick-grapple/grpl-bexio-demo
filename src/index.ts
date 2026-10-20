@@ -1,9 +1,7 @@
-
 import App from "./App.svelte";
-const app = new App({
-  target: document.getElementById("app"),
-});
 
-window.app = app;
+const target = document.getElementById("app");
+if (!target) throw new Error("Missing application root");
 
+const app = new App({ target });
 export default app;
