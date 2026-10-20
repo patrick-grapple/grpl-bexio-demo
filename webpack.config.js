@@ -22,15 +22,12 @@ module.exports = {
   },
 
   resolve: {
-    extensions: [".tsx", ".ts", ".jsx", ".js", ".json"],
-  },
-
-  resolve: {
     alias: {
       svelte: path.resolve("node_modules", "svelte"),
     },
     extensions: [".mjs", ".js", ".ts", ".svelte"],
     mainFields: ["svelte", "browser", "module", "main"],
+    conditionNames: ["svelte", "browser", "import", "require", "default"],
   },
 
   devServer: {

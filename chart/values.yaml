@@ -3,6 +3,8 @@
 # Declare variables to be passed into your templates.
 stage: prd
 env: {}
+db:
+  dbClusterName: grpl-bexiodemo
 secrets:
   bexioToken: ""
 # configuration for grapple ApplicationSet (gras)
